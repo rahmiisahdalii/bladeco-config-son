@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "689327973660",
+    "project_id": "bladeco-9a149",
+    "storage_bucket": "bladeco-9a149.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689327973660:android:52df7e6a9c7e297cee86d9",
+        "android_client_info": {
+          "package_name": "com.example.bladeco"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9PiauGosCHtxlBMrZBQV8I0USRqQNWcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
