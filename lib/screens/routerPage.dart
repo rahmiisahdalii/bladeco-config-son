@@ -168,8 +168,11 @@ class _RouterPageState extends State<RouterPage> {
                   onTap: () {
                     StorageService().removeisLogin();
                     StorageService().removeUserProfile();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false, // Tüm sayfaları temizler
+                    );
                   },
                   leading: Icon(
                     Icons.logout_outlined,
