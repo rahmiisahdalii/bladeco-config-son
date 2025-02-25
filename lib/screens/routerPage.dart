@@ -1,10 +1,10 @@
 import 'package:bladeco/components/components.dart';
 import 'package:bladeco/const/const.dart';
+import 'package:bladeco/controller/auth_controller.dart';
 import 'package:bladeco/screens/MyHomePage.dart';
 import 'package:bladeco/screens/espConfig.dart';
 import 'package:bladeco/screens/deviceConfig.dart';
-import 'package:bladeco/services/services.dart';
-import 'package:bladeco/state/state.dart';
+import 'package:bladeco/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,30 +34,7 @@ class _RouterPageState extends State<RouterPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  AuthProvider auth = AuthProvider();
-  void _deleteUser(String email) async {
-    AuthService authService = AuthService();
-
-    bool response = await authService.deleteUser(email);
-
-    if (response == true) {
-      clearUserData();
-      auth.logout();
-      removeUserProfile();
-      showCustomSnackbar(
-          context, "Hesabınız başarıyla silindi .", Colors.green);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-    }
-    if (response == false) {
-      showCustomSnackbar(context,
-          "Sunucu yanıt vermiyor , daha sonra tekrar deneyiniz!", Colors.red);
-      Navigator.pop(context);
-      Navigator.pop(context);
-    }
-  }
+  AuthController authService = AuthController();
 
   void _deleteProfile(String email, context) {
     showDialog(
@@ -97,7 +74,9 @@ class _RouterPageState extends State<RouterPage> {
                 Icons.check_box,
                 color: Colors.green,
               ),
-              onPressed: () => _deleteUser(email),
+              onPressed: () {
+                authService.deleteUser(email);
+              },
             ),
           ],
         );
@@ -116,20 +95,23 @@ class _RouterPageState extends State<RouterPage> {
 
   // Email bilgisini asenkron olarak alıyoruz
   Future<void> fetchUser() async {
-    String? email = await getUseremail(); // Email sonucunu bekliyoruz
-    String? username = await getUserFullname();
-    setState(() {
-      userEmail = email; // Aldığımız değeri state'e atıyoruz
-      userName = username;
-    });
-  }
+    // SharedPreferences üzerinden kullanıcı bilgilerini alıyoruz
+    String? email = await StorageService().getUserEmail();
+    String? username = await StorageService().getUserFullname();
 
-  Future<void> clearUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('host');
-    await prefs.remove('url');
-    await prefs.remove('model');
-    await prefs.remove('vendor');
+    // Null kontrolü ekliyoruz. Eğer null değilse state'e atıyoruz
+    if (email != null && username != null) {
+      setState(() {
+        userEmail = email; // Aldığımız email'i state'e atıyoruz
+        userName = username; // Aldığımız kullanıcı adını state'e atıyoruz
+      });
+    } else {
+      // Eğer email veya username null ise alternatif bir işlem yapılabilir
+      setState(() {
+        userEmail = 'Bilgi bulunamadı';
+        userName = 'Bilgi bulunamadı';
+      });
+    }
   }
 
   @override
@@ -184,9 +166,8 @@ class _RouterPageState extends State<RouterPage> {
                 color: Colors.transparent,
                 child: ListTile(
                   onTap: () {
-                    clearUserData();
-                    auth.logout();
-                    removeToken();
+                    StorageService().removeisLogin();
+                    StorageService().removeUserProfile();
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => HomePage()));
                   },

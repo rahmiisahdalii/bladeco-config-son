@@ -1,30 +1,30 @@
+import 'package:bladeco/controller/auth_controller.dart';
 import 'package:bladeco/screens/MyHomePage.dart';
 import 'package:bladeco/screens/routerPage.dart';
-import 'package:bladeco/state/state.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; 
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
-      child: MyApp(),
-    ),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferences.getInstance(); // SharedPreferences başlatılıyor
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // AuthController'ı GetX ile başlatıyoruz
+    Get.put(AuthController());
 
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Consumer<AuthProvider>(
-        builder: (context, auth, child) {
-          return auth.isLoggedIn ? RouterPage() : HomePage();
-        },
-      ),
+      home: Obx(() {
+        // isAuthenticated değerine göre ekranı seçiyoruz
+        return Get.find<AuthController>().isAuthenticated.value
+            ? RouterPage()
+            : HomePage();
+      }),
     );
   }
 }
