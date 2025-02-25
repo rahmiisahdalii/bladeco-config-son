@@ -1,3 +1,4 @@
+import 'package:bladeco/const/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,26 +19,31 @@ void showCustomSnackbar(BuildContext context, String text, Color color) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-class customBuildText extends StatelessWidget {
-  const customBuildText({
+class CustomBuildText extends StatelessWidget {
+  const CustomBuildText({
     super.key,
-    required this.vendorController,
+    required this.controller,
     required this.labelName,
+    required this.validator,
   });
 
-  final TextEditingController vendorController;
+  final TextEditingController controller;
   final String labelName;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: TextField(
+      child: TextFormField(
         cursorColor: Colors.green,
-        controller: vendorController,
+        controller: controller,
+        validator: validator, // Validator'ı burada kullanıyoruz
         decoration: InputDecoration(
           labelText: labelName,
-          labelStyle: TextStyle(color: Colors.blue),
+          labelStyle: TextStyle(color: primaryColor),
+          errorStyle:
+              const TextStyle(color: Colors.red), // Hata mesajları kırmızı
         ),
       ),
     );
@@ -53,23 +59,26 @@ bool isValidEmail(String email) {
 
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
-    super.key, required this.info, required this.validateInfo, required this.icondata, required this.controller,
+    super.key,
+    required this.info,
+    required this.validateInfo,
+    required this.icondata,
+    required this.controller,
   });
 
- final String info ;
- final String validateInfo ;
- final IconData icondata ;
- final TextEditingController controller ;
+  final String info;
+  final String validateInfo;
+  final IconData icondata;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25 , vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon:  Icon(icondata,
-              color: Colors.black54),
+          prefixIcon: Icon(icondata, color: Colors.black54),
           labelText: info,
           labelStyle: const TextStyle(color: Colors.black38),
           filled: true,
@@ -92,14 +101,14 @@ class CustomTextFormField extends StatelessWidget {
 
 class CustomMailTextFormField extends StatelessWidget {
   const CustomMailTextFormField({
-    super.key, required this.controller,
+    super.key,
+    required this.controller,
   });
- final TextEditingController controller ;
+  final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 25, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: TextFormField(
         controller: controller,
         keyboardType: TextInputType.emailAddress,
@@ -128,21 +137,18 @@ class CustomMailTextFormField extends StatelessWidget {
   }
 }
 
-
-
 class CustomPasswdTextFormField extends StatelessWidget {
   const CustomPasswdTextFormField({
-    super.key, required this.controller,
-    
+    super.key,
+    required this.controller,
   });
 
-  final TextEditingController controller ;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 25, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
@@ -191,32 +197,32 @@ class WifiPermissionHandler {
 }
 
 void deactive(dynamic context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color.fromRGBO(101, 199, 238, 0.7),
-        icon: const Icon(
-          color: Colors.white54,
-          FontAwesomeIcons.roadBarrier,
-          size: 30,
-        ),
-        content: const Text(
-          'Bu sürümde mevcut değil!',
-          style: TextStyle(color: Colors.white, fontSize: 18),
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Tamam',
-              style: TextStyle(color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: const Color.fromRGBO(101, 199, 238, 0.7),
+      icon: const Icon(
+        color: Colors.white54,
+        FontAwesomeIcons.roadBarrier,
+        size: 30,
       ),
-    );
-  }
+      content: const Text(
+        'Bu sürümde mevcut değil!',
+        style: TextStyle(color: Colors.white, fontSize: 18),
+        textAlign: TextAlign.center,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            'Tamam',
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+}

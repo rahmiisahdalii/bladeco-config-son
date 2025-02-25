@@ -1,10 +1,12 @@
 import 'package:bladeco/components/components.dart';
 import 'package:bladeco/const/const.dart';
 import 'package:bladeco/screens/MyHomePage.dart';
-import 'package:bladeco/screens/configure.dart';
+import 'package:bladeco/screens/espConfig.dart';
+import 'package:bladeco/screens/deviceConfig.dart';
 import 'package:bladeco/services/services.dart';
 import 'package:bladeco/state/state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_social_button/flutter_social_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 
@@ -16,8 +18,6 @@ class RouterPage extends StatefulWidget {
 }
 
 class _RouterPageState extends State<RouterPage> {
-  
-
   void showCustomSnackbar(BuildContext context, String text, Color color) {
     final snackBar = SnackBar(
       content: Text(
@@ -33,7 +33,6 @@ class _RouterPageState extends State<RouterPage> {
     // Snackbar'ı gösterme
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-  
 
   AuthProvider auth = AuthProvider();
   void _deleteUser(String email) async {
@@ -59,9 +58,7 @@ class _RouterPageState extends State<RouterPage> {
       Navigator.pop(context);
     }
   }
- 
-  
-  
+
   void _deleteProfile(String email, context) {
     showDialog(
       context: context,
@@ -238,20 +235,43 @@ class _RouterPageState extends State<RouterPage> {
               ),
               SizedBox(height: 20),
               NewWidget(
-                data: "Yapılandır",
-                bgColors: Color.fromRGBO(101, 199, 238, 1),
+                iconData:
+                    FontAwesomeIcons.chargingStation, // Şarj istasyonu ikonu
+                data: "İstasyon Yapılandırma",
+                bgColors: primaryColor,
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => configure(),
+                        builder: (context) => DeviceConfigurationScreen(),
                       ));
                 },
               ),
               NewWidget(
-                  data: "Sıfırla", bgColors: Colors.green, onPressed: () => deactive(context),),
+                iconData: FontAwesomeIcons.cogs, // Ayar/konfigürasyon ikonu
+                data: "Esp Yapılandırma",
+                bgColors: primaryColor,
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EspConfigureScreen(),
+                      ));
+                },
+              ),
               NewWidget(
-                  data: "Bilgi", bgColors: Colors.blueGrey, onPressed:() => deactive(context),),
+                iconData:
+                    FontAwesomeIcons.undo, // Geri alma veya sıfırlama ikonu
+                data: "Sıfırla",
+                bgColors: Colors.green,
+                onPressed: () => deactive(context),
+              ),
+              NewWidget(
+                iconData: FontAwesomeIcons.infoCircle, // Bilgi ikonu
+                data: "Bilgi",
+                bgColors: Colors.blueGrey,
+                onPressed: () => deactive(context),
+              ),
             ],
           ),
         ),
@@ -266,8 +286,9 @@ class NewWidget extends StatelessWidget {
     required this.data,
     required this.bgColors,
     this.onPressed,
+    this.iconData = Icons.info_outline,
   });
-
+  final IconData iconData;
   final String data;
   final Color bgColors;
   final VoidCallback? onPressed;
@@ -278,14 +299,23 @@ class NewWidget extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.7,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Text(
+        child: ElevatedButton.icon(
+          label: Text(
             data,
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
+          icon: Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: Icon(
+              iconData,
+              color: Colors.white,
+              size: 16,
+            ),
+          ),
+          onPressed: onPressed,
           style: ButtonStyle(
-            shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)))),
             backgroundColor: WidgetStatePropertyAll(bgColors),
           ),
         ),
@@ -293,7 +323,6 @@ class NewWidget extends StatelessWidget {
     );
   }
 }
-
 
 Future<bool?> _showExitConfirmationDialog(BuildContext context) {
   return PanaraConfirmDialog.show<bool>(
@@ -313,5 +342,3 @@ Future<bool?> _showExitConfirmationDialog(BuildContext context) {
     barrierDismissible: false, // optional parameter (default is true)
   );
 }
-
-
