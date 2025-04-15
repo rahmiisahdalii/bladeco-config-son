@@ -15,7 +15,7 @@ class DioClient {
 
   DioClient._internal()
       : _dio = Dio(BaseOptions(
-          baseUrl: 'http://195.85.207.145:80/Auth', // Base URL
+          baseUrl: 'http://193.111.78.145:80/Auth', // Base URL
           connectTimeout:
               Duration(milliseconds: 5000), // 5 saniye bağlantı zaman aşımı
           receiveTimeout:
