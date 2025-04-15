@@ -14,8 +14,6 @@
     <string>6.0</string>
     <key>CFBundleName</key>
     <string>bladeco</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.your.bladecoconfig</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>NSLocationWhenInUseUsageDescription</key>
