@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bladeco/components/components.dart';
 import 'package:bladeco/const/const.dart';
 import 'package:bladeco/controller/api_controller.dart';
@@ -36,44 +38,52 @@ class _EspConfigureScreenState extends State<EspConfigureScreen> {
   @override
   void initState() {
     super.initState();
+    hostController.text = 'wss://bladeco.ocpp.electroop.io:443/';
+    urlController.text = 'BLDC32AC';
+    modelController.text = 'BLDC32AC';
+    controller.text = 'BLADECO';
     scanWifi();
   }
 
   Future<void> scanWifi() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+  if (Platform.isIOS) {
 
-    if (permission == LocationPermission.denied || !isLocationEnabled) {
-      // Konum izni yok veya konum servisleri kapalı
+    return;
+  }
+
+  // Android cihazlar için devam
+  LocationPermission permission = await Geolocator.checkPermission();
+  bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+
+  if (permission == LocationPermission.denied || !isLocationEnabled) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.green,
+      content: Text(
+        'Uyarı: Wifi ağlarını görebilmek için konumunuzun açık durumda olması gerekiyor',
+        textAlign: TextAlign.center,
+      ),
+    ));
+  } else {
+    bool hasWifiPermission =
+        await WifiPermissionHandler.requestWifiPermission();
+
+    if (hasWifiPermission) {
+      // ignore: deprecated_member_use
+      List<WifiNetwork>? networks = await WiFiForIoTPlugin.loadWifiList();
+      setState(() {
+        _wifiNetworks = networks ?? [];
+      });
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.red,
         content: Text(
-          'Uyarı: Wifi ağlarını görebilmek için konumunuzun açık durumda olması gerekiyor',
+          'Konum erişimi yok. Lütfen ayarlardan izinleri kontrol ediniz.',
           textAlign: TextAlign.center,
         ),
       ));
-    } else {
-      bool hasWifiPermission =
-          await WifiPermissionHandler.requestWifiPermission();
-
-      if (hasWifiPermission) {
-        // ignore: deprecated_member_use
-        List<WifiNetwork>? networks = await WiFiForIoTPlugin.loadWifiList();
-        setState(() {
-          _wifiNetworks = networks ?? [];
-        });
-      } else {
-        // Kullanıcı izni reddettiyse uyarı gösterebilirsiniz
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            'Konum erişimi yok. Lütfen ayarlardan izinleri kontrol ediniz.',
-            textAlign: TextAlign.center,
-          ),
-        ));
-      }
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +94,7 @@ class _EspConfigureScreenState extends State<EspConfigureScreen> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          ' Yapılandırma ',
+          'İstasyon Yapılandırma',
           style:
               TextStyle(color: Color.fromRGBO(101, 199, 238, 1), fontSize: 22),
         ),
@@ -98,7 +108,7 @@ class _EspConfigureScreenState extends State<EspConfigureScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-                DropdownButton<String>(
+                Platform.isAndroid ? DropdownButton<String>(
                   dropdownColor: Colors.white,
                   iconSize: 20,
                   alignment: Alignment.center,
@@ -114,7 +124,7 @@ class _EspConfigureScreenState extends State<EspConfigureScreen> {
                   onChanged: (value) {
                     ssidController.text = value ?? "";
                   },
-                ),
+                ) : SizedBox(),
                 CustomBuildText(
                   controller: ssidController,
                   labelName: "WİFİ ADI",

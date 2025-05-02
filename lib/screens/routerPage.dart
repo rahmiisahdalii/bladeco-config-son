@@ -7,7 +7,6 @@ import 'package:bladeco/screens/deviceConfig.dart';
 import 'package:bladeco/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social_button/flutter_social_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 
 class RouterPage extends StatefulWidget {
@@ -201,7 +200,7 @@ class _RouterPageState extends State<RouterPage> {
               )
             ],
           ),
-        ))),
+        ),),),
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -221,7 +220,7 @@ class _RouterPageState extends State<RouterPage> {
               NewWidget(
                 iconData:
                     FontAwesomeIcons.chargingStation, // Şarj istasyonu ikonu
-                data: "İstasyon Yapılandırma",
+                data: "İstasyon Bilgi",
                 bgColors: primaryColor,
                 onPressed: () {
                   Navigator.push(
@@ -233,7 +232,7 @@ class _RouterPageState extends State<RouterPage> {
               ),
               NewWidget(
                 iconData: FontAwesomeIcons.cogs, // Ayar/konfigürasyon ikonu
-                data: "Esp Yapılandırma",
+                data: "İstasyon Yapılandırma",
                 bgColors: primaryColor,
                 onPressed: () {
                   Navigator.push(

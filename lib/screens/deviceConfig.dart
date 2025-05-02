@@ -24,7 +24,19 @@ class _DeviceConfigurationScreenState extends State<DeviceConfigurationScreen> {
   final imsiController = TextEditingController();
 
   final ApiController _apiController = Get.put(ApiController());
-
+    @override
+  void initState() {
+    super.initState();
+      ocppModelController.text = 'BLDC';             // İstasyon modeli
+  ocppVendorController.text = 'BLADECO';              // Firma ismi
+  firmwareVersionController.text = '1.0.1';          // Firmware sürümü
+  chargePointSerialController.text = 'BLDC-AC';    // Şarj noktası seri no
+  meterSerialController.text = '';           // Sayaç seri no
+  meterTypeController.text = 'Schneider-IEM3150';                 // Sayaç tipi
+  chargeBoxSerialController.text = '';       // Charge Box seri no
+  iccidController.text = '';        // SIM kart ICCID
+  imsiController.text = '';             // SIM kart IMSI
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +46,7 @@ class _DeviceConfigurationScreenState extends State<DeviceConfigurationScreen> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Cihaz Yapılandırma',
+          'İstasyon Bilgi',
           style:
               TextStyle(color: Color.fromRGBO(101, 199, 238, 1), fontSize: 22),
         ),
@@ -153,14 +165,14 @@ class _DeviceConfigurationScreenState extends State<DeviceConfigurationScreen> {
                           onPressed: () {
                             if (_formKey.currentState?.validate() ?? false) {
                               _apiController.sendDeviceConfiguration(
-                                ocppModel: ocppModelController.text,
-                                ocppVendor: ocppVendorController.text,
+                                model: ocppModelController.text,
+                                vendor: ocppVendorController.text,
                                 firmwareVersion: firmwareVersionController.text,
-                                chargePointSerial:
+                                chargePointSerialNumber:
                                     chargePointSerialController.text,
-                                meterSerial: meterSerialController.text,
+                                meterSerialNumber: meterSerialController.text,
                                 meterType: meterTypeController.text,
-                                chargeBoxSerial: chargeBoxSerialController.text,
+                                chargeBoxSerialNumber: chargeBoxSerialController.text,
                                 iccid: iccidController.text,
                                 imsi: imsiController.text,
                               );

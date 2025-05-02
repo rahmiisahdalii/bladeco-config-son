@@ -14,8 +14,8 @@ class ApiController extends GetxController {
     super.onInit();
     _dio = Dio(BaseOptions(
       baseUrl: 'http://192.168.4.1',
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 5),
+      connectTimeout: Duration(seconds: 30),
+      receiveTimeout: Duration(seconds: 30),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -82,26 +82,26 @@ class ApiController extends GetxController {
 
   /// 📌 **Cihaz yapılandırmasını `/configuration` endpoint'ine gönderir.**
   Future<void> sendDeviceConfiguration({
-    required String ocppModel,
-    required String ocppVendor,
+    required String model,
+    required String vendor,
     required String firmwareVersion,
-    required String chargePointSerial,
-    required String meterSerial,
+    required String chargePointSerialNumber,
+    required String meterSerialNumber,
     required String meterType,
-    required String chargeBoxSerial,
+    required String chargeBoxSerialNumber,
     required String iccid,
     required String imsi,
   }) async {
     isLoading.value = true;
     try {
       final response = await _dio.post('/configuration', data: {
-        "ocppModel": ocppModel,
-        "ocppVendor": ocppVendor,
+        "model": model,
+        "vendor": vendor,
         "firmwareVersion": firmwareVersion,
-        "chargePointSerial": chargePointSerial,
-        "meterSerial": meterSerial,
+        "chargePointSerialNumber": chargePointSerialNumber,
+        "meterSerialNumber": meterSerialNumber,
         "meterType": meterType,
-        "chargeBoxSerial": chargeBoxSerial,
+        "chargeBoxSerialNumber": chargeBoxSerialNumber,
         "iccid": iccid,
         "imsi": imsi,
       });
